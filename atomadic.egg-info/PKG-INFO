@@ -1,0 +1,244 @@
+Metadata-Version: 2.4
+Name: atomadic
+Version: 0.1.0
+Summary: Atomadic Python SDK -- one MCP, entitlement-gated tool-sets
+Author-email: Atomadic <support@atomadic.tech>
+License: Apache-2.0
+Project-URL: Homepage, https://atomadic.tech
+Project-URL: Docs, https://atomadic.tech/docs.html
+Project-URL: Issues, https://github.com/atomadictech/atomadic-sdk/issues
+Keywords: atomadic,mcp,agents,sdk,trust,verification
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Software Development :: Libraries
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: license-file
+
+# Atomadic Python SDK
+
+[![PyPI](https://img.shields.io/pypi/v/atomadic.svg)](https://pypi.org/project/atomadic/)  [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+
+**One MCP. One key. Every tool-set you are entitled to.**
+
+Atomadic is sovereign infrastructure for the agent economy. Mount one MCP at
+`mcp.atomadic.tech`; your **entitlement key** decides which product tool-sets you
+can call. Every call passes Gate-1 (entitlement) then Gate-2 (trust).
+
+- **Docs:** https://atomadic.tech/docs.html
+- **Architecture:** https://atomadic.tech/docs.html?d=architecture
+- **Support:** support@atomadic.tech
+
+## Install
+
+```bash
+pip install atomadic
+```
+
+## Quickstart
+
+```python
+from atomadic import Atomadic, fuse
+
+ato = Atomadic(api_key='ato_...')  # or set ATOMADIC_KEY env var
+
+# Call any tool your plan unlocks:
+result = fuse.assess_architecture_pure(
+    ato,
+    source_text='def f(x):\n    return x + 1',
+    module_name='f_pure',
+)
+print(result['verdict'], result['density'])
+
+# Or browse the surface your key unlocks:
+for t in ato.list_tools():
+    print(t['name'])
+```
+
+## Authentication
+
+Get an entitlement key from [atomadic.tech](https://atomadic.tech). The key is decoded
+and verified at the edge on every call; minting is internal-only. Keep keys
+server-side -- the gate refuses out-of-plan calls, but secrets belong in your env.
+
+```python
+ato = Atomadic(api_key='ato_<blob>_<sig>')
+# or:  export ATOMADIC_KEY=ato_<blob>_<sig>
+```
+
+## Products & tool-sets
+
+Each product is an entitlement-gated tool-set; hold the entitlement, call the tool.
+Reserved products (Vanguard, Aegis, Catalyst) and roadmap (Evolve, Research, Mind-Lab)
+are not yet in the SDK.
+
+### Fuse [live]
+
+`entitlement: fuse` &middot; `from atomadic import fuse`
+
+> _Architecture compiler -- AI writes code, we give it architecture._
+
+Analyze your code against the 5-tier, single-callable discipline.
+
+| Tool | Required args |
+|---|---|
+| **`assess_architecture_pure`** | `source_text`, `module_name` |
+| **`assess_import_direction_pure`** | `source_text`, `tier` |
+| **`scan_code_stubs_pure`** | `source_text` |
+
+```python
+from atomadic import Atomadic, fuse
+ato = Atomadic(api_key='ato_...')
+fuse.assess_architecture_pure(ato, source_text=..., module_name=...)
+```
+
+See per-tool docstrings for full arg schemas: `help(fuse.assess_architecture_pure)`
+
+### Nexus [live]
+
+`entitlement: nexus` &middot; `from atomadic import nexus`
+
+> _The trust gate every action passes._
+
+Gate-2 sovereign trust: trust phases, hallucination bound, signed attestations.
+
+| Tool | Required args |
+|---|---|
+| **`assess_nexus_trust_phase_stateful`** | `ledger_path` |
+| **`define_nexus_constants_pure`** | (none) |
+| **`enforce_nexus_gate_stateful`** | `action_kind`, `severity` |
+| **`record_nexus_attestation_stateful`** | `action_kind`, `severity`, `ledger_path` |
+| **`record_nexus_escalation_stateful`** | `action_kind`, `escalation_path` |
+| **`scan_nexus_attestation_history_stateful`** | `ledger_path` |
+
+```python
+from atomadic import Atomadic, nexus
+ato = Atomadic(api_key='ato_...')
+nexus.assess_nexus_trust_phase_stateful(ato, ledger_path=...)
+```
+
+See per-tool docstrings for full arg schemas: `help(nexus.assess_nexus_trust_phase_stateful)`
+
+### Security [live]
+
+`entitlement: security` &middot; `from atomadic import security`
+
+> _A bubble of protection around every agent._
+
+Bubble check, redaction, error-fold, hardening posture (PQC/FIPS-203).
+
+| Tool | Required args |
+|---|---|
+| **`assess_security_bubble_pure`** | `content` |
+| **`classify_error_fold_pure`** | `error_message` |
+| **`compute_hardening_posture_pure`** | `target_product_id`, `hardening_level` |
+| **`compute_redacted_args_pure`** | `args` |
+| **`compute_redacted_text_pure`** | `text` |
+| **`define_security_constants_pure`** | (none) |
+
+```python
+from atomadic import Atomadic, security
+ato = Atomadic(api_key='ato_...')
+security.assess_security_bubble_pure(ato, content=...)
+```
+
+See per-tool docstrings for full arg schemas: `help(security.assess_security_bubble_pure)`
+
+### Proving Ground [live]
+
+`entitlement: proving` &middot; `from atomadic import proving`
+
+> _Nothing ships unproven._
+
+Ship-gate, proof-readiness signals, and test-coverage estimation.
+
+| Tool | Required args |
+|---|---|
+| **`assess_proof_readiness_pure`** | `source_text` |
+| **`score_test_coverage_pure`** | `source_text`, `test_source` |
+| **`validate_logic_block_composite`** | `source_text`, `module_name` |
+
+```python
+from atomadic import Atomadic, proving
+ato = Atomadic(api_key='ato_...')
+proving.assess_proof_readiness_pure(ato, source_text=...)
+```
+
+See per-tool docstrings for full arg schemas: `help(proving.assess_proof_readiness_pure)`
+
+### Release [live]
+
+`entitlement: release` &middot; `from atomadic import release`
+
+> _Template -> render -> deploy._
+
+Template registry, website render, Cloudflare deploy. Dry-run by default.
+
+| Tool | Required args |
+|---|---|
+| **`record_release_template_stateful`** | `template_id`, `kind`, `source_kind`, `source_ref`, `registry_path` |
+| **`render_from_template_pure`** | `template`, `context` |
+| **`render_website_stateful`** | `template_dir`, `context`, `output_dir` |
+| **`scan_release_templates_stateful`** | `registry_path` |
+| **`serve_cloudflare_pages_stateful`** | `directory`, `project_name` |
+| **`serve_cloudflare_worker_stateful`** | `worker_dir` |
+
+```python
+from atomadic import Atomadic, release
+ato = Atomadic(api_key='ato_...')
+release.record_release_template_stateful(ato, template_id=..., kind=..., source_kind=...)
+```
+
+See per-tool docstrings for full arg schemas: `help(release.record_release_template_stateful)`
+
+### Healer [beta]
+
+`entitlement: healer` &middot; `from atomadic import healer`
+
+> _Diagnose, grade, and plan the repair._
+
+Read-only diagnosis: code-health grade + advisory repair plan.
+
+| Tool | Required args |
+|---|---|
+| **`assess_artifact_health_pure`** | `source_text` |
+| **`compute_repair_plan_pure`** | `error_message` |
+
+```python
+from atomadic import Atomadic, healer
+ato = Atomadic(api_key='ato_...')
+healer.assess_artifact_health_pure(ato, source_text=...)
+```
+
+See per-tool docstrings for full arg schemas: `help(healer.assess_artifact_health_pure)`
+
+## Two-gate dispatch
+
+Every call is filtered then verified:
+
+1. **Gate-1 (entitlement):** `tools/list` shows only the tools your plan unlocks; out-of-plan `tools/call` is refused.
+2. **Gate-2 (trust, Nexus):** trust phase + severity ceiling + hallucination bound. Governed actions return a signed `attest:<id>` receipt.
+
+See [the architecture docs](https://atomadic.tech/docs.html?d=two-gate) for the full model.
+
+## Plans
+
+Free / Basic / Dev / Pro / Teams / Enterprise -- per product, or whole-line via
+Murmuration Complete. Subscription is the product; x402 meters only overage + agent-
+to-agent calls. Pricing: https://atomadic.tech/docs.html?d=pricing.
+
+## Determinism
+
+Pure-tier tools have no side effects and no hidden state: same inputs, same output,
+same content hash, every time. Re-running a pure tool is a verification.
+
+## Contributing
+
+This SDK is **auto-emitted from the live Atomadic MCP registry** -- changes here
+should flow through the engine, not be hand-patched. For issues, requests, or
+feedback: support@atomadic.tech.
+
+## License
+
+Apache-2.0 -- see [LICENSE](LICENSE).
