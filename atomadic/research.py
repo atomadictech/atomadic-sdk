@@ -24,6 +24,22 @@ def compose_experiment_design_pure(client, hypothesis, **kwargs):
     args.update(kwargs)
     return client.call('compose_experiment_design_pure', args)
 
+def compose_literature_query_pure(client, topic, **kwargs):
+    """[Research product Â· entitlement: research] Turn a topic into structured search queries across angles + source types to weight. Composes queries; fetches nothing.
+
+    Args:
+        topic (string, required): see MCP schema
+
+    Example:
+        from atomadic import Atomadic, research
+        ato = Atomadic(api_key='ato_...')
+        result = research.compose_literature_query_pure(ato, topic=...)
+    """
+    args = {'topic': topic}
+    args = {k: v for k, v in args.items() if v is not None}
+    args.update(kwargs)
+    return client.call('compose_literature_query_pure', args)
+
 def compose_problem_decomposition_pure(client, problem, **kwargs):
     """[Research product Â· entitlement: research] Decompose an open problem into dependency-ordered sub-problems (defineâ†’constraintsâ†’exploreâ†’designâ†’buildâ†’verify) + critical path.
 
@@ -56,3 +72,19 @@ def compose_research_panel_pure(client, question, context=None, **kwargs):
     args = {k: v for k, v in args.items() if v is not None}
     args.update(kwargs)
     return client.call('compose_research_panel_pure', args)
+
+def rank_hypotheses_pure(client, hypotheses, **kwargs):
+    """[Research product Â· entitlement: research] Rank hypotheses by priority = impact Ã— tractability Ã· (uncertainty+1) â†’ ordered list.
+
+    Args:
+        hypotheses (array, required): see MCP schema
+
+    Example:
+        from atomadic import Atomadic, research
+        ato = Atomadic(api_key='ato_...')
+        result = research.rank_hypotheses_pure(ato, hypotheses=...)
+    """
+    args = {'hypotheses': hypotheses}
+    args = {k: v for k, v in args.items() if v is not None}
+    args.update(kwargs)
+    return client.call('rank_hypotheses_pure', args)

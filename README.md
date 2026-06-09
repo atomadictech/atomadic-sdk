@@ -220,7 +220,9 @@ See per-tool docstrings for full arg schemas: `help(healer.assess_artifact_healt
 |---|---|
 | **`assess_falsifiability_pure`** | `claim` |
 | **`assess_proposal_verdict_pure`** | `proposal_text` |
+| **`classify_cognitive_bias_pure`** | `reasoning_text` |
 | **`compose_adversarial_critique_pure`** | `proposal` |
+| **`score_idea_readiness_pure`** | `idea_text` |
 
 ```python
 from atomadic import Atomadic, mind_lab
@@ -238,6 +240,8 @@ See per-tool docstrings for full arg schemas: `help(mind_lab.assess_falsifiabili
 |---|---|
 | **`assess_improvement_candidates_pure`** | `source_text`, `module_name` |
 | **`assess_regression_risk_pure`** | `source_text` |
+| **`compose_mutation_plan_pure`** | `source_text` |
+| **`rank_evolution_candidates_pure`** | `candidates` |
 | **`score_evolution_fitness_pure`** | `before_source`, `after_source` |
 
 ```python
@@ -255,8 +259,10 @@ See per-tool docstrings for full arg schemas: `help(evolve.assess_improvement_ca
 | Tool | Required args |
 |---|---|
 | **`compose_experiment_design_pure`** | `hypothesis` |
+| **`compose_literature_query_pure`** | `topic` |
 | **`compose_problem_decomposition_pure`** | `problem` |
 | **`compose_research_panel_pure`** | `question` |
+| **`rank_hypotheses_pure`** | `hypotheses` |
 
 ```python
 from atomadic import Atomadic, research
