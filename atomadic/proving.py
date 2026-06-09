@@ -40,20 +40,3 @@ def score_test_coverage_pure(client, source_text, test_source, **kwargs):
     args = {k: v for k, v in args.items() if v is not None}
     args.update(kwargs)
     return client.call('score_test_coverage_pure', args)
-
-def validate_logic_block_composite(client, source_text, module_name, **kwargs):
-    """[Proving product Â· entitlement: proving] The ship gate: judge a provided Python source against the Atomadic standards (logic density, single-callable, echo, import isolation, skeleton-clone, stub-emitter, sovereign imports). Returns {passed, violations}.
-
-    Args:
-        source_text (string, required): see MCP schema
-        module_name (string, required): see MCP schema
-
-    Example:
-        from atomadic import Atomadic, proving
-        ato = Atomadic(api_key='ato_...')
-        result = proving.validate_logic_block_composite(ato, source_text=..., module_name=...)
-    """
-    args = {'source_text': source_text, 'module_name': module_name}
-    args = {k: v for k, v in args.items() if v is not None}
-    args.update(kwargs)
-    return client.call('validate_logic_block_composite', args)

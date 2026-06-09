@@ -1,20 +1,16 @@
-<div align="center">
-
 # Atomadic Python SDK
+
+[![PyPI](https://img.shields.io/pypi/v/atomadic.svg)](https://pypi.org/project/atomadic/)  [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
 **One MCP. One key. Every tool-set you are entitled to.**
 
-[![PyPI](https://img.shields.io/pypi/v/atomadic.svg)](https://pypi.org/project/atomadic/) [![Python](https://img.shields.io/badge/python-3.9%2B-blue)](https://pypi.org/project/atomadic/) [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE) [![Docs](https://img.shields.io/badge/docs-atomadic.tech-7c3aed)](https://atomadic.tech/docs.html)
+Atomadic is sovereign infrastructure for the agent economy. Mount one MCP at
+`mcp.atomadic.tech`; your **entitlement key** decides which product tool-sets you
+can call. Every call passes Gate-1 (entitlement) then Gate-2 (trust).
 
-[Website](https://atomadic.tech) · [Docs](https://atomadic.tech/docs.html) · [Architecture](https://atomadic.tech/docs.html?d=architecture) · [Support](mailto:support@atomadic.tech)
-
-</div>
-
----
-
-Atomadic is sovereign infrastructure for the agent economy. You mount **one** MCP server at `mcp.atomadic.tech`, attach your **entitlement key**, and your client immediately sees the tool-sets your plan unlocks. Every call passes **Gate-1 (entitlement)** then **Gate-2 (trust)** before it runs. Pure-tier tools are deterministic — same inputs, same output, every time. Governed actions return a signed `attest:<id>` proof receipt you can audit.
-
-This SDK is **auto-emitted from the live MCP registry**. When tools change, the package regenerates — every product module, every function signature, every docstring stays in lockstep with the live surface.
+- **Docs:** https://atomadic.tech/docs.html
+- **Architecture:** https://atomadic.tech/docs.html?d=architecture
+- **Support:** support@atomadic.tech
 
 ## Install
 
@@ -22,206 +18,322 @@ This SDK is **auto-emitted from the live MCP registry**. When tools change, the 
 pip install atomadic
 ```
 
-Python 3.9+. Zero runtime dependencies (the client uses stdlib `urllib`).
-
 ## Quickstart
 
 ```python
 from atomadic import Atomadic, fuse
 
-ato = Atomadic(api_key="ato_...")   # or: export ATOMADIC_KEY=ato_...
+ato = Atomadic(api_key='ato_...')  # or set ATOMADIC_KEY env var
 
+# Call any tool your plan unlocks:
 result = fuse.assess_architecture_pure(
     ato,
-    source_text="def add(a, b):\n    return a + b",
-    module_name="add_pure",
+    source_text='def f(x):\n    return x + 1',
+    module_name='f_pure',
 )
-print(result["verdict"], result["density"])
-# PASS 0.18
-```
+print(result['verdict'], result['density'])
 
-Browse the surface your key actually unlocks:
-
-```python
+# Or browse the surface your key unlocks:
 for t in ato.list_tools():
-    print(t["name"], "—", t["description"][:80])
+    print(t['name'])
 ```
 
 ## Authentication
 
-Get an entitlement key from [atomadic.tech](https://atomadic.tech). The key (`ato_<blob>_<sig>`) is signed and **verified at the edge on every call** — no server-side lookup. Minting is internal-only.
+Get an entitlement key from [atomadic.tech](https://atomadic.tech). The key is decoded
+and verified at the edge on every call; minting is internal-only. Keep keys
+server-side -- the gate refuses out-of-plan calls, but secrets belong in your env.
 
 ```python
-# Explicit:
-ato = Atomadic(api_key="ato_<blob>_<sig>")
-
-# Or via environment:
-#   export ATOMADIC_KEY=ato_<blob>_<sig>
-ato = Atomadic()
+ato = Atomadic(api_key='ato_<blob>_<sig>')
+# or:  export ATOMADIC_KEY=ato_<blob>_<sig>
 ```
-
-Keep keys server-side. The gate refuses out-of-plan calls, but secrets still belong in your environment, never in client code.
 
 ## Products & tool-sets
 
-Each product is an entitlement-gated tool-set. Hold the entitlement, call the tool. The reserved products (Vanguard, Aegis, Catalyst) and roadmap products (Evolve, Research, Mind-Lab) are not yet part of the SDK.
+Each product is an entitlement-gated tool-set; hold the entitlement, call the tool.
+Reserved products (Vanguard, Aegis, Catalyst) and roadmap (Evolve, Research, Mind-Lab)
+are not yet in the SDK.
 
-| Product | Status | Entitlement | Module | Tools |
-|---|---|---|---|---|
-| **Murmuration** | live (all-access) | `murmuration_complete` | _(see all below)_ | 26 |
-| **Fuse** | live | `fuse` | `atomadic.fuse` | 3 |
-| **Nexus** | live | `nexus` | `atomadic.nexus` | 6 |
-| **Security** | live | `security` | `atomadic.security` | 6 |
-| **Proving** | live | `proving` | `atomadic.proving` | 3 |
-| **Release** | live | `release` | `atomadic.release` | 6 |
-| **Healer** | beta | `healer` | `atomadic.healer` | 2 |
+### Murmuration [live]
 
-### Fuse — architecture compiler
+`entitlement: murmuration` &middot; `from atomadic import murmuration`
 
-> _AI writes code. We give it architecture._
+> _The whole lattice in one entitlement._
 
-Analyze your source against the 5-tier, single-callable discipline. Pure and deterministic — nothing about your code leaves the call.
+Umbrella entitlement: every public product's tool-set under one key.
+
+| Tool | Required args |
+|---|---|
+| **`omega_agent_heartbeat`** | `agent_id`, `ledger_path` |
+| **`omega_attention_marker`** | `agent_id`, `ledger_path`, `focus` |
+| **`omega_handoff_capsule`** | `from_agent_id`, `ledger_path`, `next_step` |
+| **`omega_lane`** | (none) |
+| **`omega_propose_mwo`** | `intent`, `ledger_path` |
+
+```python
+from atomadic import Atomadic, murmuration
+ato = Atomadic(api_key='ato_...')
+murmuration.omega_agent_heartbeat(ato, agent_id=..., ledger_path=...)
+```
+
+See per-tool docstrings for full arg schemas: `help(murmuration.omega_agent_heartbeat)`
+
+### Fuse [live]
+
+`entitlement: fuse` &middot; `from atomadic import fuse`
+
+> _Architecture compiler -- AI writes code, we give it architecture._
+
+Analyze your code against the 5-tier, single-callable discipline.
+
+| Tool | Required args |
+|---|---|
+| **`assess_architecture_pure`** | `source_text`, `module_name` |
+| **`assess_import_direction_pure`** | `source_text`, `tier` |
+| **`scan_code_stubs_pure`** | `source_text` |
 
 ```python
 from atomadic import Atomadic, fuse
-ato = Atomadic()
-
-fuse.assess_architecture_pure(ato, source_text=src, module_name="x_pure")
-fuse.assess_import_direction_pure(ato, source_text=src, tier=3)
-fuse.scan_code_stubs_pure(ato, source_text=src)
+ato = Atomadic(api_key='ato_...')
+fuse.assess_architecture_pure(ato, source_text=..., module_name=...)
 ```
 
-### Nexus — Gate-2 trust authority
+See per-tool docstrings for full arg schemas: `help(fuse.assess_architecture_pure)`
+
+### Nexus [live]
+
+`entitlement: nexus` &middot; `from atomadic import nexus`
 
 > _The trust gate every action passes._
 
-Resolve trust phase, enforce severity ceiling and the 0.95 hallucination bound, and emit signed, hash-chained attestations.
+Gate-2 sovereign trust: trust phases, hallucination bound, signed attestations.
+
+| Tool | Required args |
+|---|---|
+| **`assess_nexus_trust_phase_stateful`** | `ledger_path` |
+| **`define_nexus_constants_pure`** | (none) |
+| **`enforce_nexus_gate_stateful`** | `action_kind`, `severity` |
+| **`record_nexus_attestation_stateful`** | `action_kind`, `severity`, `ledger_path` |
+| **`record_nexus_escalation_stateful`** | `action_kind`, `escalation_path` |
+| **`scan_nexus_attestation_history_stateful`** | `ledger_path` |
 
 ```python
 from atomadic import Atomadic, nexus
-ato = Atomadic()
-
-nexus.enforce_nexus_gate_stateful(ato, action_kind="emit", severity="medium",
-                                  attestation_count=12, recent_escalations=0,
-                                  has_federated_key=False, entitlement_ok=True,
-                                  bound_score=None, payload={"x": 1},
-                                  ledger_path="./trust.jsonl")
+ato = Atomadic(api_key='ato_...')
+nexus.assess_nexus_trust_phase_stateful(ato, ledger_path=...)
 ```
 
-### Security — the agent bubble
+See per-tool docstrings for full arg schemas: `help(nexus.assess_nexus_trust_phase_stateful)`
+
+### Security [live]
+
+`entitlement: security` &middot; `from atomadic import security`
 
 > _A bubble of protection around every agent._
 
-Adversarial bubble-check (PROCEED / REVIEW / BLOCK), verify-without-reveal secret redaction, error-fold classification, cumulative hardening directives.
+Bubble check, redaction, error-fold, hardening posture (PQC/FIPS-203).
+
+| Tool | Required args |
+|---|---|
+| **`assess_security_bubble_pure`** | `content` |
+| **`classify_error_fold_pure`** | `error_message` |
+| **`compute_hardening_posture_pure`** | `target_product_id`, `hardening_level` |
+| **`compute_redacted_args_pure`** | `args` |
+| **`compute_redacted_text_pure`** | `text` |
+| **`define_security_constants_pure`** | (none) |
 
 ```python
 from atomadic import Atomadic, security
-ato = Atomadic()
-
-security.assess_security_bubble_pure(ato, content="…", strict=False)
-security.compute_redacted_text_pure(ato, text="token: sk-…")
-security.compute_hardening_posture_pure(ato, target_product_id="fuse",
-                                        hardening_level="high")
+ato = Atomadic(api_key='ato_...')
+security.assess_security_bubble_pure(ato, content=...)
 ```
 
-### Proving — the gauntlet
+See per-tool docstrings for full arg schemas: `help(security.assess_security_bubble_pure)`
+
+### Proving Ground [live]
+
+`entitlement: proving` &middot; `from atomadic import proving`
 
 > _Nothing ships unproven._
 
-Run the same ship-gate the platform uses against your code: judges logic density, single-callable, echo, imports, sovereignty, stubs.
+Ship-gate, proof-readiness signals, and test-coverage estimation.
+
+| Tool | Required args |
+|---|---|
+| **`assess_proof_readiness_pure`** | `source_text` |
+| **`score_test_coverage_pure`** | `source_text`, `test_source` |
 
 ```python
 from atomadic import Atomadic, proving
-ato = Atomadic()
-
-proving.validate_logic_block_composite(ato, source_text=src, module_name="x_pure")
-proving.assess_proof_readiness_pure(ato, source_text=src)
-proving.score_test_coverage_pure(ato, source_text=src, test_source=tests)
+ato = Atomadic(api_key='ato_...')
+proving.assess_proof_readiness_pure(ato, source_text=...)
 ```
 
-### Release — template → render → deploy
+See per-tool docstrings for full arg schemas: `help(proving.assess_proof_readiness_pure)`
 
-> _Bring our templates, or your own._
+### Release [live]
 
-Register and render templates, then deploy to Cloudflare. Dry-run by default; live deploys require explicit `operator_authorized=True`.
+`entitlement: release` &middot; `from atomadic import release`
+
+> _Template -> render -> deploy._
+
+Template registry, website render, Cloudflare deploy. Dry-run by default.
+
+| Tool | Required args |
+|---|---|
+| **`record_release_template_stateful`** | `template_id`, `kind`, `source_kind`, `source_ref`, `registry_path` |
+| **`scan_release_templates_stateful`** | `registry_path` |
 
 ```python
 from atomadic import Atomadic, release
-ato = Atomadic()
-
-release.record_release_template_stateful(ato, template_id="site.v1",
-                                         kind="website", source_kind="path",
-                                         source_ref="./site",
-                                         registry_path="./reg.jsonl")
-release.render_website_stateful(ato, template_dir="./site",
-                                context={"title": "Acme"}, output_dir="./out")
-release.serve_cloudflare_pages_stateful(ato, directory="./out",
-                                        project_name="acme-site")
+ato = Atomadic(api_key='ato_...')
+release.record_release_template_stateful(ato, template_id=..., kind=..., source_kind=...)
 ```
 
-### Healer — diagnosis & repair plans _(beta)_
+See per-tool docstrings for full arg schemas: `help(release.record_release_template_stateful)`
+
+### Healer [beta]
+
+`entitlement: healer` &middot; `from atomadic import healer`
 
 > _Diagnose, grade, and plan the repair._
 
-Read-only diagnosis: an A–F health grade for a code artifact, and a step-by-step advisory repair plan from its error.
+Read-only diagnosis: code-health grade + advisory repair plan.
+
+| Tool | Required args |
+|---|---|
+| **`assess_artifact_health_pure`** | `source_text` |
+| **`compute_repair_plan_pure`** | `error_message` |
+| **`omega_repair_closure`** | `forge_root`, `target_root` |
+| **`omega_repair_missing_imports`** | (none) |
+| **`omega_scan_ast`** | (none) |
+| **`omega_scan_missing_imports`** | (none) |
+| **`omega_scan_mistier`** | (none) |
+| **`omega_self_heal`** | (none) |
+| **`omega_sweep_orphans`** | `src_root` |
+| **`omega_verify_imports`** | (none) |
 
 ```python
 from atomadic import Atomadic, healer
-ato = Atomadic()
-
-healer.assess_artifact_health_pure(ato, source_text=src, module_name="x_pure")
-healer.compute_repair_plan_pure(ato, error_message="ModuleNotFoundError: …",
-                                source_text=src)
+ato = Atomadic(api_key='ato_...')
+healer.assess_artifact_health_pure(ato, source_text=...)
 ```
 
-## The two-gate dispatch
+See per-tool docstrings for full arg schemas: `help(healer.assess_artifact_health_pure)`
+
+### Evolve 
+
+`entitlement: evolve` &middot; `from atomadic import evolve`
+
+| Tool | Required args |
+|---|---|
+| **`omega_agent_games_register`** | `agent_id`, `ledger_path`, `display_name` |
+| **`omega_agent_games_score`** | `agent_id`, `ledgers_dir` |
+| **`omega_gratitude_imprint`** | `from_agent_id`, `to_agent_id`, `ledger_path`, `reason` |
+| **`omega_pro_tip`** | `author_agent_id`, `ledger_path`, `title`, `body`, `topic` |
+| **`omega_signal_boost`** | `author_agent_id`, `ledger_path`, `title` |
+| **`omega_wisdom_flywheel`** | (none) |
+
+```python
+from atomadic import Atomadic, evolve
+ato = Atomadic(api_key='ato_...')
+evolve.omega_agent_games_register(ato, agent_id=..., ledger_path=..., display_name=...)
+```
+
+See per-tool docstrings for full arg schemas: `help(evolve.omega_agent_games_register)`
+
+### Forge 
+
+`entitlement: forge` &middot; `from atomadic import forge`
+
+| Tool | Required args |
+|---|---|
+| **`omega_chain_autowire`** | `target_name`, `chain` |
+| **`omega_context_packet`** | `query` |
+| **`omega_emit_lang`** | `atom` |
+| **`omega_emit_polyglot`** | `product`, `output_root` |
+| **`omega_govern_actions`** | `additions` |
+| **`omega_govern_scopes`** | `additions` |
+| **`omega_harvest_permissive`** | `corpus_path` |
+| **`omega_intent`** | `intent` |
+| **`omega_intent_shippable`** | `intent` |
+| **`omega_register_tool`** | `name`, `atom`, `tier`, `description` |
+| **`omega_synthesize`** | `raw_name`, `source` |
+| **`orchestrate_corpus_harvest_temporal`** | `corpus_path` |
+| **`orchestrate_pipeline_truthstate_temporal`** | (none) |
+| **`render_from_template_pure`** | `template`, `context` |
+| **`render_website_stateful`** | `template_dir`, `context`, `output_dir` |
+
+```python
+from atomadic import Atomadic, forge
+ato = Atomadic(api_key='ato_...')
+forge.omega_chain_autowire(ato, target_name=..., chain=...)
+```
+
+See per-tool docstrings for full arg schemas: `help(forge.omega_chain_autowire)`
+
+### Gateway 
+
+`entitlement: gateway` &middot; `from atomadic import gateway`
+
+| Tool | Required args |
+|---|---|
+| **`filter_entitled_tools_stateful`** | (none) |
+| **`serve_cloudflare_pages_stateful`** | `directory`, `project_name` |
+| **`serve_cloudflare_worker_stateful`** | `worker_dir` |
+
+```python
+from atomadic import Atomadic, gateway
+ato = Atomadic(api_key='ato_...')
+gateway.filter_entitled_tools_stateful(ato)
+```
+
+See per-tool docstrings for full arg schemas: `help(gateway.filter_entitled_tools_stateful)`
+
+### Mind_Lab 
+
+`entitlement: mind_lab` &middot; `from atomadic import mind_lab`
+
+| Tool | Required args |
+|---|---|
+| **`omega_brainstorm`** | `topic`, `host`, `contributors` |
+| **`omega_emergent_chains`** | (none) |
+
+```python
+from atomadic import Atomadic, mind_lab
+ato = Atomadic(api_key='ato_...')
+mind_lab.omega_brainstorm(ato, topic=..., host=..., contributors=...)
+```
+
+See per-tool docstrings for full arg schemas: `help(mind_lab.omega_brainstorm)`
+
+## Two-gate dispatch
 
 Every call is filtered then verified:
 
-```
-   call → [ Gate 1: Entitlement ] → [ Gate 2: Trust ] → tool → result + receipt
-            commercial rights         sovereign integrity
-            (Murmuration)             (Nexus / Aletheia)
-```
+1. **Gate-1 (entitlement):** `tools/list` shows only the tools your plan unlocks; out-of-plan `tools/call` is refused.
+2. **Gate-2 (trust, Nexus):** trust phase + severity ceiling + hallucination bound. Governed actions return a signed `attest:<id>` receipt.
 
-- **Gate-1** filters `tools/list` to your plan and refuses out-of-plan `tools/call`. Internal tools never surface at any tier.
-- **Gate-2** checks trust phase + severity + hallucination bound, and emits a signed attestation on PASS. Refusals return a typed code (`MISSING_ENTITLEMENT`, `INSUFFICIENT_TRUST_PHASE`, `HALLUCINATION_BOUND_VIOLATED`, `SCHEMA_VALIDATION_FAILED`, `ESCALATION_REQUIRED`) — never silent.
-
-Full model: <https://atomadic.tech/docs.html?d=two-gate>.
+See [the architecture docs](https://atomadic.tech/docs.html?d=two-gate) for the full model.
 
 ## Plans
 
-One ladder, per product or whole-line via Murmuration Complete:
-
-**Free** · **Basic** · **Dev** · **Pro** · **Teams** · **Enterprise**
-
-Cards (Stripe) for subscriptions; x402 / USDC meters only overage above plan and agent-to-agent calls; invoice for Enterprise. Subscription is the product; x402 is the meter, not the product. Pricing is being finalized — see <https://atomadic.tech/docs.html?d=pricing>.
+Free / Basic / Dev / Pro / Teams / Enterprise -- per product, or whole-line via
+Murmuration Complete. Subscription is the product; x402 meters only overage + agent-
+to-agent calls. Pricing: https://atomadic.tech/docs.html?d=pricing.
 
 ## Determinism
 
-Pure-tier tools have no side effects and no hidden state: the same inputs produce the same output and the same content hash, every time, on any machine. Re-running a pure tool is a verification, not a gamble.
+Pure-tier tools have no side effects and no hidden state: same inputs, same output,
+same content hash, every time. Re-running a pure tool is a verification.
 
-Effectful tools (deploys, ledger writes, network) are isolated to where they are contracted and are explicit about it. External-IO release tools dry-run by default and require explicit operator authorization to go live.
+## Contributing
 
-## API surface
-
-The SDK is a thin, faithful wrapper:
-
-- `atomadic.Atomadic(api_key=None, url=None)` — client. Reads `ATOMADIC_KEY` and `ATOMADIC_MCP_URL` from env if not passed.
-- `Atomadic.call(tool, arguments=None)` — raw `tools/call`. Parses the JSON-text content automatically.
-- `Atomadic.list_tools()` — `tools/list`, filtered to your entitlement.
-- `atomadic.<product>.<tool>(client, …)` — typed wrapper for every public tool, with arg schemas in the docstrings.
-
-```python
-help(atomadic.fuse.assess_architecture_pure)
-```
-
-## How this SDK is built
-
-This package is **auto-emitted from the live MCP tool registry** by an engine atom (`build_atomadic_sdk_stateful`). Patching this repo by hand is the wrong layer — module bodies, function signatures, and docstrings are generated. To change behavior, change the tool contract upstream and re-emit.
-
-For issues, feedback, or partner / sovereign / on-prem inquiries: **support@atomadic.tech**.
+This SDK is **auto-emitted from the live Atomadic MCP registry** -- changes here
+should flow through the engine, not be hand-patched. For issues, requests, or
+feedback: support@atomadic.tech.
 
 ## License
 
-Apache-2.0 — see [LICENSE](LICENSE).
+Apache-2.0 -- see [LICENSE](LICENSE).

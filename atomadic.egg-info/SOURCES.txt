@@ -3,8 +3,13 @@ README.md
 pyproject.toml
 atomadic/__init__.py
 atomadic/client.py
+atomadic/evolve.py
+atomadic/forge.py
 atomadic/fuse.py
+atomadic/gateway.py
 atomadic/healer.py
+atomadic/mind_lab.py
+atomadic/murmuration.py
 atomadic/nexus.py
 atomadic/proving.py
 atomadic/release.py
