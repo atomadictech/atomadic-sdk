@@ -92,13 +92,18 @@ Gate-2 sovereign trust: trust phases, hallucination bound, signed attestations.
 | Tool | Required args |
 |---|---|
 | **`assess_nexus_trust_phase_stateful`** | `ledger_path` |
+| **`assess_sybil_risk_pure`** | `signals` |
 | **`classify_action_severity_pure`** | `action_kind` |
+| **`compute_reputation_score_pure`** | `events` |
 | **`compute_trust_score_pure`** | `attestation_count`, `recent_escalations`, `account_age_days` |
+| **`compute_verified_randomness_pure`** | `seed` |
 | **`define_nexus_constants_pure`** | (none) |
 | **`enforce_nexus_gate_stateful`** | `action_kind`, `severity` |
+| **`match_agent_capability_pure`** | `need`, `candidates` |
 | **`record_nexus_attestation_stateful`** | `action_kind`, `severity`, `ledger_path` |
 | **`record_nexus_escalation_stateful`** | `action_kind`, `escalation_path` |
 | **`scan_nexus_attestation_history_stateful`** | `ledger_path` |
+| **`validate_delegation_chain_pure`** | `chain` |
 
 ```python
 from atomadic import Atomadic, nexus
@@ -212,6 +217,26 @@ healer.assess_artifact_health_pure(ato, source_text=...)
 
 See per-tool docstrings for full arg schemas: `help(healer.assess_artifact_health_pure)`
 
+### Aegis 
+
+`entitlement: aegis` &middot; `from atomadic import aegis`
+
+| Tool | Required args |
+|---|---|
+| **`assess_compliance_posture_pure`** | `controls` |
+| **`classify_data_sensitivity_pure`** | `text` |
+| **`compose_governance_report_pure`** | `system_name` |
+| **`compute_audit_trail_digest_pure`** | `events` |
+| **`enforce_action_policy_pure`** | `action`, `policy` |
+
+```python
+from atomadic import Atomadic, aegis
+ato = Atomadic(api_key='ato_...')
+aegis.assess_compliance_posture_pure(ato, controls=...)
+```
+
+See per-tool docstrings for full arg schemas: `help(aegis.assess_compliance_posture_pure)`
+
 ### Mind_Lab 
 
 `entitlement: mind_lab` &middot; `from atomadic import mind_lab`
@@ -252,6 +277,26 @@ evolve.assess_improvement_candidates_pure(ato, source_text=..., module_name=...)
 
 See per-tool docstrings for full arg schemas: `help(evolve.assess_improvement_candidates_pure)`
 
+### Vanguard 
+
+`entitlement: vanguard` &middot; `from atomadic import vanguard`
+
+| Tool | Required args |
+|---|---|
+| **`assess_mev_exposure_pure`** | `order` |
+| **`assess_transaction_risk_pure`** | `transaction` |
+| **`compose_settlement_terms_pure`** | `amount_usd`, `parties` |
+| **`compute_slippage_guard_pure`** | `expected_out` |
+| **`validate_spend_policy_pure`** | `transaction`, `budget` |
+
+```python
+from atomadic import Atomadic, vanguard
+ato = Atomadic(api_key='ato_...')
+vanguard.assess_mev_exposure_pure(ato, order=...)
+```
+
+See per-tool docstrings for full arg schemas: `help(vanguard.assess_mev_exposure_pure)`
+
 ### Research 
 
 `entitlement: research` &middot; `from atomadic import research`
@@ -271,6 +316,26 @@ research.compose_experiment_design_pure(ato, hypothesis=...)
 ```
 
 See per-tool docstrings for full arg schemas: `help(research.compose_experiment_design_pure)`
+
+### Catalyst 
+
+`entitlement: catalyst` &middot; `from atomadic import catalyst`
+
+| Tool | Required args |
+|---|---|
+| **`compose_paywall_policy_pure`** | `resource`, `price_usd` |
+| **`compute_settlement_split_pure`** | `amount`, `splits` |
+| **`compute_usage_meter_pure`** | `events`, `rate_per_unit` |
+| **`compute_x402_quote_pure`** | `units`, `rate_per_unit` |
+| **`validate_quota_tree_pure`** | `tree` |
+
+```python
+from atomadic import Atomadic, catalyst
+ato = Atomadic(api_key='ato_...')
+catalyst.compose_paywall_policy_pure(ato, resource=..., price_usd=...)
+```
+
+See per-tool docstrings for full arg schemas: `help(catalyst.compose_paywall_policy_pure)`
 
 ## Two-gate dispatch
 

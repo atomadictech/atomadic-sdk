@@ -26,6 +26,22 @@ def assess_nexus_trust_phase_stateful(client, ledger_path, actor=None, has_feder
     args.update(kwargs)
     return client.call('assess_nexus_trust_phase_stateful', args)
 
+def assess_sybil_risk_pure(client, signals, **kwargs):
+    """[Nexus product Â· entitlement: nexus] Topological Identity: score Sybil/identity risk from signals (age, attestations, peers, shared fingerprints) â†’ 0-1 risk + tier.
+
+    Args:
+        signals (object, required): see MCP schema
+
+    Example:
+        from atomadic import Atomadic, nexus
+        ato = Atomadic(api_key='ato_...')
+        result = nexus.assess_sybil_risk_pure(ato, signals=...)
+    """
+    args = {'signals': signals}
+    args = {k: v for k, v in args.items() if v is not None}
+    args.update(kwargs)
+    return client.call('assess_sybil_risk_pure', args)
+
 def classify_action_severity_pure(client, action_kind, context=None, **kwargs):
     """[Nexus product Â· entitlement: nexus] Classify action severity (low/medium/high/critical) â†’ trust-phase floor, operator-cosign requirement, hallucination-bound enforcement.
 
@@ -42,6 +58,22 @@ def classify_action_severity_pure(client, action_kind, context=None, **kwargs):
     args = {k: v for k, v in args.items() if v is not None}
     args.update(kwargs)
     return client.call('classify_action_severity_pure', args)
+
+def compute_reputation_score_pure(client, events, **kwargs):
+    """[Nexus product Â· entitlement: nexus] Reputation Ledger: 0-1 reputation from recency-decayed peer-rating events.
+
+    Args:
+        events (array, required): see MCP schema
+
+    Example:
+        from atomadic import Atomadic, nexus
+        ato = Atomadic(api_key='ato_...')
+        result = nexus.compute_reputation_score_pure(ato, events=...)
+    """
+    args = {'events': events}
+    args = {k: v for k, v in args.items() if v is not None}
+    args.update(kwargs)
+    return client.call('compute_reputation_score_pure', args)
 
 def compute_trust_score_pure(client, attestation_count, recent_escalations, account_age_days, has_federated_key=None, **kwargs):
     """[Nexus product Â· entitlement: nexus] Compute a 0-1 trust score + phase from attestation count, recent escalations, account age, and federation.
@@ -61,6 +93,23 @@ def compute_trust_score_pure(client, attestation_count, recent_escalations, acco
     args = {k: v for k, v in args.items() if v is not None}
     args.update(kwargs)
     return client.call('compute_trust_score_pure', args)
+
+def compute_verified_randomness_pure(client, seed, count=None, **kwargs):
+    """[Nexus product Â· entitlement: nexus] VeriRand: deterministic verifiable randomness from a seed (sha256 hash-chain + commitment); re-derivable and verifiable.
+
+    Args:
+        seed (string, required): see MCP schema
+        count (integer, optional): see MCP schema
+
+    Example:
+        from atomadic import Atomadic, nexus
+        ato = Atomadic(api_key='ato_...')
+        result = nexus.compute_verified_randomness_pure(ato, seed=...)
+    """
+    args = {'seed': seed, 'count': count}
+    args = {k: v for k, v in args.items() if v is not None}
+    args.update(kwargs)
+    return client.call('compute_verified_randomness_pure', args)
 
 def define_nexus_constants_pure(client, **kwargs):
     """[Nexus product Â· entitlement: nexus] The canonical Nexus trust constants: 5 trust phases + thresholds, 4 severities with phase floor + co-signers, signer modes, the 0.95 hallucination-bound floor, attestation schema, and 5 refusal codes.
@@ -98,6 +147,23 @@ def enforce_nexus_gate_stateful(client, action_kind, severity, attestation_count
     args = {k: v for k, v in args.items() if v is not None}
     args.update(kwargs)
     return client.call('enforce_nexus_gate_stateful', args)
+
+def match_agent_capability_pure(client, need, candidates, **kwargs):
+    """[Nexus product Â· entitlement: nexus] Agent Discovery: match a required capability set against candidate agents, ranked by coverage.
+
+    Args:
+        need (array, required): see MCP schema
+        candidates (array, required): see MCP schema
+
+    Example:
+        from atomadic import Atomadic, nexus
+        ato = Atomadic(api_key='ato_...')
+        result = nexus.match_agent_capability_pure(ato, need=..., candidates=...)
+    """
+    args = {'need': need, 'candidates': candidates}
+    args = {k: v for k, v in args.items() if v is not None}
+    args.update(kwargs)
+    return client.call('match_agent_capability_pure', args)
 
 def record_nexus_attestation_stateful(client, action_kind, severity, ledger_path, bound_score=None, payload=None, signer_mode=None, trust_phase=None, **kwargs):
     """[Nexus product Â· entitlement: nexus] Issue a Nexus attestation envelope (atomadic.nexus_attestation.v1) and append it to the hash-chained attestation ledger. Deterministic envelope + attest:&lt;12-hex&gt; id.
@@ -160,3 +226,19 @@ def scan_nexus_attestation_history_stateful(client, ledger_path, action_kind=Non
     args = {k: v for k, v in args.items() if v is not None}
     args.update(kwargs)
     return client.call('scan_nexus_attestation_history_stateful', args)
+
+def validate_delegation_chain_pure(client, chain, **kwargs):
+    """[Nexus product Â· entitlement: nexus] VeriDelegate: validate a UCAN-style capability delegation chain â€” attenuation, audienceâ†’issuer continuity, expiry monotonicity.
+
+    Args:
+        chain (array, required): see MCP schema
+
+    Example:
+        from atomadic import Atomadic, nexus
+        ato = Atomadic(api_key='ato_...')
+        result = nexus.validate_delegation_chain_pure(ato, chain=...)
+    """
+    args = {'chain': chain}
+    args = {k: v for k, v in args.items() if v is not None}
+    args.update(kwargs)
+    return client.call('validate_delegation_chain_pure', args)
