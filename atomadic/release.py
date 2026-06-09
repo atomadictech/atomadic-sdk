@@ -8,6 +8,40 @@ Status: live.
 Auto-emitted from the live MCP registry.
 """
 
+def compose_changelog_pure(client, entries, version=None, **kwargs):
+    """[Release product Â· entitlement: release] Compose a grouped changelog (Breaking/Features/Fixes/Other) from change entries â†’ structured groups + markdown.
+
+    Args:
+        entries (array, required): see MCP schema
+        version (string, optional): see MCP schema
+
+    Example:
+        from atomadic import Atomadic, release
+        ato = Atomadic(api_key='ato_...')
+        result = release.compose_changelog_pure(ato, entries=...)
+    """
+    args = {'entries': entries, 'version': version}
+    args = {k: v for k, v in args.items() if v is not None}
+    args.update(kwargs)
+    return client.call('compose_changelog_pure', args)
+
+def compute_semver_bump_pure(client, change_descriptions, current_version=None, **kwargs):
+    """[Release product Â· entitlement: release] Decide the semver bump (major/minor/patch) from change descriptions and compute the next version.
+
+    Args:
+        change_descriptions (array, required): see MCP schema
+        current_version (string, optional): see MCP schema
+
+    Example:
+        from atomadic import Atomadic, release
+        ato = Atomadic(api_key='ato_...')
+        result = release.compute_semver_bump_pure(ato, change_descriptions=...)
+    """
+    args = {'change_descriptions': change_descriptions, 'current_version': current_version}
+    args = {k: v for k, v in args.items() if v is not None}
+    args.update(kwargs)
+    return client.call('compute_semver_bump_pure', args)
+
 def record_release_template_stateful(client, template_id, kind, source_kind, source_ref, registry_path, brand=None, tokens=None, **kwargs):
     """[Release product Â· entitlement: release] Register a release template (ours or customer BYO) into the template registry ledger.
 
@@ -122,3 +156,19 @@ def serve_cloudflare_worker_stateful(client, worker_dir, operator_authorized=Non
     args = {k: v for k, v in args.items() if v is not None}
     args.update(kwargs)
     return client.call('serve_cloudflare_worker_stateful', args)
+
+def validate_release_readiness_pure(client, checklist, **kwargs):
+    """[Release product Â· entitlement: release] Validate release readiness from a checklist (tests/no-stubs/version/changelog/secrets/docs) â†’ go/no-go + blockers.
+
+    Args:
+        checklist (object, required): see MCP schema
+
+    Example:
+        from atomadic import Atomadic, release
+        ato = Atomadic(api_key='ato_...')
+        result = release.validate_release_readiness_pure(ato, checklist=...)
+    """
+    args = {'checklist': checklist}
+    args = {k: v for k, v in args.items() if v is not None}
+    args.update(kwargs)
+    return client.call('validate_release_readiness_pure', args)

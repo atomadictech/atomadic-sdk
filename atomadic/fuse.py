@@ -42,6 +42,54 @@ def assess_import_direction_pure(client, source_text, tier, **kwargs):
     args.update(kwargs)
     return client.call('assess_import_direction_pure', args)
 
+def assess_naming_clarity_pure(client, source_text, **kwargs):
+    """[Fuse product Â· entitlement: fuse] Naming clarity: verb-led function names, length bounds, no single-char variables â†’ clarity score + findings.
+
+    Args:
+        source_text (string, required): see MCP schema
+
+    Example:
+        from atomadic import Atomadic, fuse
+        ato = Atomadic(api_key='ato_...')
+        result = fuse.assess_naming_clarity_pure(ato, source_text=...)
+    """
+    args = {'source_text': source_text}
+    args = {k: v for k, v in args.items() if v is not None}
+    args.update(kwargs)
+    return client.call('assess_naming_clarity_pure', args)
+
+def compute_complexity_metrics_pure(client, source_text, **kwargs):
+    """[Fuse product Â· entitlement: fuse] Per-function complexity: cyclomatic complexity, max nesting depth, params, line span â†’ module verdict (ok/refactor).
+
+    Args:
+        source_text (string, required): see MCP schema
+
+    Example:
+        from atomadic import Atomadic, fuse
+        ato = Atomadic(api_key='ato_...')
+        result = fuse.compute_complexity_metrics_pure(ato, source_text=...)
+    """
+    args = {'source_text': source_text}
+    args = {k: v for k, v in args.items() if v is not None}
+    args.update(kwargs)
+    return client.call('compute_complexity_metrics_pure', args)
+
+def extract_call_graph_pure(client, source_text, **kwargs):
+    """[Fuse product Â· entitlement: fuse] Intra-module call graph: per-function callees, entrypoints, and leaves.
+
+    Args:
+        source_text (string, required): see MCP schema
+
+    Example:
+        from atomadic import Atomadic, fuse
+        ato = Atomadic(api_key='ato_...')
+        result = fuse.extract_call_graph_pure(ato, source_text=...)
+    """
+    args = {'source_text': source_text}
+    args = {k: v for k, v in args.items() if v is not None}
+    args.update(kwargs)
+    return client.call('extract_call_graph_pure', args)
+
 def orchestrate_s2s_temporal(client, intent, target_source=None, dry_run=None, **kwargs):
     """[Fuse product Â· entitlement: fuse] Spaghetti-to-shippable: turn a single repo + an intent into a gated, shippable product package. Public profile is BOUNDED â€” single-repo harvest, tier-5-max emission, redaction (enforce_public_s2s_constraints). Dry-run by default.
 

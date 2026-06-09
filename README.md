@@ -67,6 +67,9 @@ Analyze your code against the 5-tier, single-callable discipline.
 |---|---|
 | **`assess_architecture_pure`** | `source_text`, `module_name` |
 | **`assess_import_direction_pure`** | `source_text`, `tier` |
+| **`assess_naming_clarity_pure`** | `source_text` |
+| **`compute_complexity_metrics_pure`** | `source_text` |
+| **`extract_call_graph_pure`** | `source_text` |
 | **`orchestrate_s2s_temporal`** | `intent` |
 | **`scan_code_stubs_pure`** | `source_text` |
 
@@ -89,6 +92,8 @@ Gate-2 sovereign trust: trust phases, hallucination bound, signed attestations.
 | Tool | Required args |
 |---|---|
 | **`assess_nexus_trust_phase_stateful`** | `ledger_path` |
+| **`classify_action_severity_pure`** | `action_kind` |
+| **`compute_trust_score_pure`** | `attestation_count`, `recent_escalations`, `account_age_days` |
 | **`define_nexus_constants_pure`** | (none) |
 | **`enforce_nexus_gate_stateful`** | `action_kind`, `severity` |
 | **`record_nexus_attestation_stateful`** | `action_kind`, `severity`, `ledger_path` |
@@ -118,7 +123,10 @@ Bubble check, redaction, error-fold, hardening posture (PQC/FIPS-203).
 | **`compute_hardening_posture_pure`** | `target_product_id`, `hardening_level` |
 | **`compute_redacted_args_pure`** | `args` |
 | **`compute_redacted_text_pure`** | `text` |
+| **`compute_threat_model_pure`** | `component` |
 | **`define_security_constants_pure`** | (none) |
+| **`scan_dependency_risk_pure`** | `requirements_text` |
+| **`validate_secret_hygiene_pure`** | `source_text` |
 
 ```python
 from atomadic import Atomadic, security
@@ -162,20 +170,23 @@ Template registry, website render, Cloudflare deploy. Dry-run by default.
 
 | Tool | Required args |
 |---|---|
+| **`compose_changelog_pure`** | `entries` |
+| **`compute_semver_bump_pure`** | `change_descriptions` |
 | **`record_release_template_stateful`** | `template_id`, `kind`, `source_kind`, `source_ref`, `registry_path` |
 | **`render_from_template_pure`** | `template`, `context` |
 | **`render_website_stateful`** | `template_dir`, `context`, `output_dir` |
 | **`scan_release_templates_stateful`** | `registry_path` |
 | **`serve_cloudflare_pages_stateful`** | `directory`, `project_name` |
 | **`serve_cloudflare_worker_stateful`** | `worker_dir` |
+| **`validate_release_readiness_pure`** | `checklist` |
 
 ```python
 from atomadic import Atomadic, release
 ato = Atomadic(api_key='ato_...')
-release.record_release_template_stateful(ato, template_id=..., kind=..., source_kind=...)
+release.compose_changelog_pure(ato, entries=...)
 ```
 
-See per-tool docstrings for full arg schemas: `help(release.record_release_template_stateful)`
+See per-tool docstrings for full arg schemas: `help(release.compose_changelog_pure)`
 
 ### Healer [beta]
 

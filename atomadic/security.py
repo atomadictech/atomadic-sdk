@@ -91,6 +91,23 @@ def compute_redacted_text_pure(client, text, **kwargs):
     args.update(kwargs)
     return client.call('compute_redacted_text_pure', args)
 
+def compute_threat_model_pure(client, component, exposure=None, **kwargs):
+    """[Security product Â· entitlement: security] STRIDE threat model for a component (sample threat + mitigation per category), prioritized by exposure.
+
+    Args:
+        component (string, required): see MCP schema
+        exposure (string, optional): see MCP schema
+
+    Example:
+        from atomadic import Atomadic, security
+        ato = Atomadic(api_key='ato_...')
+        result = security.compute_threat_model_pure(ato, component=...)
+    """
+    args = {'component': component, 'exposure': exposure}
+    args = {k: v for k, v in args.items() if v is not None}
+    args.update(kwargs)
+    return client.call('compute_threat_model_pure', args)
+
 def define_security_constants_pure(client, **kwargs):
     """[Security product Â· entitlement: security] Canonical Security constants: bubble verdicts, hardening levels + cumulative directives, error-fold categories, redaction kinds, PQC standard (FIPS-203).
 
@@ -103,3 +120,35 @@ def define_security_constants_pure(client, **kwargs):
     args = {k: v for k, v in args.items() if v is not None}
     args.update(kwargs)
     return client.call('define_security_constants_pure', args)
+
+def scan_dependency_risk_pure(client, requirements_text, **kwargs):
+    """[Security product Â· entitlement: security] Scan a requirements list for supply-chain risk (unpinned, wildcard, VCS/URL install, insecure scheme) â†’ findings + verdict.
+
+    Args:
+        requirements_text (string, required): see MCP schema
+
+    Example:
+        from atomadic import Atomadic, security
+        ato = Atomadic(api_key='ato_...')
+        result = security.scan_dependency_risk_pure(ato, requirements_text=...)
+    """
+    args = {'requirements_text': requirements_text}
+    args = {k: v for k, v in args.items() if v is not None}
+    args.update(kwargs)
+    return client.call('scan_dependency_risk_pure', args)
+
+def validate_secret_hygiene_pure(client, source_text, **kwargs):
+    """[Security product Â· entitlement: security] Scan source for hardcoded secrets (AWS keys, private keys, API tokens, passwords, connection strings) â†’ redacted findings + hygiene verdict.
+
+    Args:
+        source_text (string, required): see MCP schema
+
+    Example:
+        from atomadic import Atomadic, security
+        ato = Atomadic(api_key='ato_...')
+        result = security.validate_secret_hygiene_pure(ato, source_text=...)
+    """
+    args = {'source_text': source_text}
+    args = {k: v for k, v in args.items() if v is not None}
+    args.update(kwargs)
+    return client.call('validate_secret_hygiene_pure', args)

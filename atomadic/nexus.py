@@ -26,6 +26,42 @@ def assess_nexus_trust_phase_stateful(client, ledger_path, actor=None, has_feder
     args.update(kwargs)
     return client.call('assess_nexus_trust_phase_stateful', args)
 
+def classify_action_severity_pure(client, action_kind, context=None, **kwargs):
+    """[Nexus product Â· entitlement: nexus] Classify action severity (low/medium/high/critical) â†’ trust-phase floor, operator-cosign requirement, hallucination-bound enforcement.
+
+    Args:
+        action_kind (string, required): see MCP schema
+        context (string, optional): see MCP schema
+
+    Example:
+        from atomadic import Atomadic, nexus
+        ato = Atomadic(api_key='ato_...')
+        result = nexus.classify_action_severity_pure(ato, action_kind=...)
+    """
+    args = {'action_kind': action_kind, 'context': context}
+    args = {k: v for k, v in args.items() if v is not None}
+    args.update(kwargs)
+    return client.call('classify_action_severity_pure', args)
+
+def compute_trust_score_pure(client, attestation_count, recent_escalations, account_age_days, has_federated_key=None, **kwargs):
+    """[Nexus product Â· entitlement: nexus] Compute a 0-1 trust score + phase from attestation count, recent escalations, account age, and federation.
+
+    Args:
+        attestation_count (integer, required): see MCP schema
+        recent_escalations (integer, required): see MCP schema
+        account_age_days (integer, required): see MCP schema
+        has_federated_key (boolean, optional): see MCP schema
+
+    Example:
+        from atomadic import Atomadic, nexus
+        ato = Atomadic(api_key='ato_...')
+        result = nexus.compute_trust_score_pure(ato, attestation_count=..., recent_escalations=..., account_age_days=...)
+    """
+    args = {'attestation_count': attestation_count, 'recent_escalations': recent_escalations, 'account_age_days': account_age_days, 'has_federated_key': has_federated_key}
+    args = {k: v for k, v in args.items() if v is not None}
+    args.update(kwargs)
+    return client.call('compute_trust_score_pure', args)
+
 def define_nexus_constants_pure(client, **kwargs):
     """[Nexus product Â· entitlement: nexus] The canonical Nexus trust constants: 5 trust phases + thresholds, 4 severities with phase floor + co-signers, signer modes, the 0.95 hallucination-bound floor, attestation schema, and 5 refusal codes.
 
