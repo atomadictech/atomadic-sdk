@@ -139,6 +139,9 @@ Ship-gate, proof-readiness signals, and test-coverage estimation.
 | Tool | Required args |
 |---|---|
 | **`assess_proof_readiness_pure`** | `source_text` |
+| **`assess_test_quality_pure`** | `test_source` |
+| **`compute_proof_obligations_pure`** | `source_text` |
+| **`score_documentation_coverage_pure`** | `source_text` |
 | **`score_test_coverage_pure`** | `source_text`, `test_source` |
 
 ```python
@@ -185,6 +188,9 @@ Read-only diagnosis: code-health grade + advisory repair plan.
 | Tool | Required args |
 |---|---|
 | **`assess_artifact_health_pure`** | `source_text` |
+| **`classify_failure_mode_pure`** | `error_message` |
+| **`compose_rollback_plan_pure`** | `error_message` |
+| **`compute_blast_radius_pure`** | `source_text`, `symbol` |
 | **`compute_repair_plan_pure`** | `error_message` |
 
 ```python
@@ -195,6 +201,24 @@ healer.assess_artifact_health_pure(ato, source_text=...)
 
 See per-tool docstrings for full arg schemas: `help(healer.assess_artifact_health_pure)`
 
+### Mind_Lab 
+
+`entitlement: mind_lab` &middot; `from atomadic import mind_lab`
+
+| Tool | Required args |
+|---|---|
+| **`assess_falsifiability_pure`** | `claim` |
+| **`assess_proposal_verdict_pure`** | `proposal_text` |
+| **`compose_adversarial_critique_pure`** | `proposal` |
+
+```python
+from atomadic import Atomadic, mind_lab
+ato = Atomadic(api_key='ato_...')
+mind_lab.assess_falsifiability_pure(ato, claim=...)
+```
+
+See per-tool docstrings for full arg schemas: `help(mind_lab.assess_falsifiability_pure)`
+
 ### Evolve 
 
 `entitlement: evolve` &middot; `from atomadic import evolve`
@@ -202,6 +226,8 @@ See per-tool docstrings for full arg schemas: `help(healer.assess_artifact_healt
 | Tool | Required args |
 |---|---|
 | **`assess_improvement_candidates_pure`** | `source_text`, `module_name` |
+| **`assess_regression_risk_pure`** | `source_text` |
+| **`score_evolution_fitness_pure`** | `before_source`, `after_source` |
 
 ```python
 from atomadic import Atomadic, evolve
@@ -211,37 +237,23 @@ evolve.assess_improvement_candidates_pure(ato, source_text=..., module_name=...)
 
 See per-tool docstrings for full arg schemas: `help(evolve.assess_improvement_candidates_pure)`
 
-### Mind_Lab 
-
-`entitlement: mind_lab` &middot; `from atomadic import mind_lab`
-
-| Tool | Required args |
-|---|---|
-| **`assess_proposal_verdict_pure`** | `proposal_text` |
-
-```python
-from atomadic import Atomadic, mind_lab
-ato = Atomadic(api_key='ato_...')
-mind_lab.assess_proposal_verdict_pure(ato, proposal_text=...)
-```
-
-See per-tool docstrings for full arg schemas: `help(mind_lab.assess_proposal_verdict_pure)`
-
 ### Research 
 
 `entitlement: research` &middot; `from atomadic import research`
 
 | Tool | Required args |
 |---|---|
+| **`compose_experiment_design_pure`** | `hypothesis` |
+| **`compose_problem_decomposition_pure`** | `problem` |
 | **`compose_research_panel_pure`** | `question` |
 
 ```python
 from atomadic import Atomadic, research
 ato = Atomadic(api_key='ato_...')
-research.compose_research_panel_pure(ato, question=...)
+research.compose_experiment_design_pure(ato, hypothesis=...)
 ```
 
-See per-tool docstrings for full arg schemas: `help(research.compose_research_panel_pure)`
+See per-tool docstrings for full arg schemas: `help(research.compose_experiment_design_pure)`
 
 ## Two-gate dispatch
 
