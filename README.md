@@ -55,30 +55,6 @@ Each product is an entitlement-gated tool-set; hold the entitlement, call the to
 Reserved products (Vanguard, Aegis, Catalyst) and roadmap (Evolve, Research, Mind-Lab)
 are not yet in the SDK.
 
-### Murmuration [live]
-
-`entitlement: murmuration` &middot; `from atomadic import murmuration`
-
-> _The whole lattice in one entitlement._
-
-Umbrella entitlement: every public product's tool-set under one key.
-
-| Tool | Required args |
-|---|---|
-| **`omega_agent_heartbeat`** | `agent_id`, `ledger_path` |
-| **`omega_attention_marker`** | `agent_id`, `ledger_path`, `focus` |
-| **`omega_handoff_capsule`** | `from_agent_id`, `ledger_path`, `next_step` |
-| **`omega_lane`** | (none) |
-| **`omega_propose_mwo`** | `intent`, `ledger_path` |
-
-```python
-from atomadic import Atomadic, murmuration
-ato = Atomadic(api_key='ato_...')
-murmuration.omega_agent_heartbeat(ato, agent_id=..., ledger_path=...)
-```
-
-See per-tool docstrings for full arg schemas: `help(murmuration.omega_agent_heartbeat)`
-
 ### Fuse [live]
 
 `entitlement: fuse` &middot; `from atomadic import fuse`
@@ -91,6 +67,7 @@ Analyze your code against the 5-tier, single-callable discipline.
 |---|---|
 | **`assess_architecture_pure`** | `source_text`, `module_name` |
 | **`assess_import_direction_pure`** | `source_text`, `tier` |
+| **`orchestrate_s2s_temporal`** | `intent` |
 | **`scan_code_stubs_pure`** | `source_text` |
 
 ```python
@@ -183,7 +160,11 @@ Template registry, website render, Cloudflare deploy. Dry-run by default.
 | Tool | Required args |
 |---|---|
 | **`record_release_template_stateful`** | `template_id`, `kind`, `source_kind`, `source_ref`, `registry_path` |
+| **`render_from_template_pure`** | `template`, `context` |
+| **`render_website_stateful`** | `template_dir`, `context`, `output_dir` |
 | **`scan_release_templates_stateful`** | `registry_path` |
+| **`serve_cloudflare_pages_stateful`** | `directory`, `project_name` |
+| **`serve_cloudflare_worker_stateful`** | `worker_dir` |
 
 ```python
 from atomadic import Atomadic, release
@@ -205,14 +186,6 @@ Read-only diagnosis: code-health grade + advisory repair plan.
 |---|---|
 | **`assess_artifact_health_pure`** | `source_text` |
 | **`compute_repair_plan_pure`** | `error_message` |
-| **`omega_repair_closure`** | `forge_root`, `target_root` |
-| **`omega_repair_missing_imports`** | (none) |
-| **`omega_scan_ast`** | (none) |
-| **`omega_scan_missing_imports`** | (none) |
-| **`omega_scan_mistier`** | (none) |
-| **`omega_self_heal`** | (none) |
-| **`omega_sweep_orphans`** | `src_root` |
-| **`omega_verify_imports`** | (none) |
 
 ```python
 from atomadic import Atomadic, healer
@@ -221,92 +194,6 @@ healer.assess_artifact_health_pure(ato, source_text=...)
 ```
 
 See per-tool docstrings for full arg schemas: `help(healer.assess_artifact_health_pure)`
-
-### Evolve 
-
-`entitlement: evolve` &middot; `from atomadic import evolve`
-
-| Tool | Required args |
-|---|---|
-| **`omega_agent_games_register`** | `agent_id`, `ledger_path`, `display_name` |
-| **`omega_agent_games_score`** | `agent_id`, `ledgers_dir` |
-| **`omega_gratitude_imprint`** | `from_agent_id`, `to_agent_id`, `ledger_path`, `reason` |
-| **`omega_pro_tip`** | `author_agent_id`, `ledger_path`, `title`, `body`, `topic` |
-| **`omega_signal_boost`** | `author_agent_id`, `ledger_path`, `title` |
-| **`omega_wisdom_flywheel`** | (none) |
-
-```python
-from atomadic import Atomadic, evolve
-ato = Atomadic(api_key='ato_...')
-evolve.omega_agent_games_register(ato, agent_id=..., ledger_path=..., display_name=...)
-```
-
-See per-tool docstrings for full arg schemas: `help(evolve.omega_agent_games_register)`
-
-### Forge 
-
-`entitlement: forge` &middot; `from atomadic import forge`
-
-| Tool | Required args |
-|---|---|
-| **`omega_chain_autowire`** | `target_name`, `chain` |
-| **`omega_context_packet`** | `query` |
-| **`omega_emit_lang`** | `atom` |
-| **`omega_emit_polyglot`** | `product`, `output_root` |
-| **`omega_govern_actions`** | `additions` |
-| **`omega_govern_scopes`** | `additions` |
-| **`omega_harvest_permissive`** | `corpus_path` |
-| **`omega_intent`** | `intent` |
-| **`omega_intent_shippable`** | `intent` |
-| **`omega_register_tool`** | `name`, `atom`, `tier`, `description` |
-| **`omega_synthesize`** | `raw_name`, `source` |
-| **`orchestrate_corpus_harvest_temporal`** | `corpus_path` |
-| **`orchestrate_pipeline_truthstate_temporal`** | (none) |
-| **`render_from_template_pure`** | `template`, `context` |
-| **`render_website_stateful`** | `template_dir`, `context`, `output_dir` |
-
-```python
-from atomadic import Atomadic, forge
-ato = Atomadic(api_key='ato_...')
-forge.omega_chain_autowire(ato, target_name=..., chain=...)
-```
-
-See per-tool docstrings for full arg schemas: `help(forge.omega_chain_autowire)`
-
-### Gateway 
-
-`entitlement: gateway` &middot; `from atomadic import gateway`
-
-| Tool | Required args |
-|---|---|
-| **`filter_entitled_tools_stateful`** | (none) |
-| **`serve_cloudflare_pages_stateful`** | `directory`, `project_name` |
-| **`serve_cloudflare_worker_stateful`** | `worker_dir` |
-
-```python
-from atomadic import Atomadic, gateway
-ato = Atomadic(api_key='ato_...')
-gateway.filter_entitled_tools_stateful(ato)
-```
-
-See per-tool docstrings for full arg schemas: `help(gateway.filter_entitled_tools_stateful)`
-
-### Mind_Lab 
-
-`entitlement: mind_lab` &middot; `from atomadic import mind_lab`
-
-| Tool | Required args |
-|---|---|
-| **`omega_brainstorm`** | `topic`, `host`, `contributors` |
-| **`omega_emergent_chains`** | (none) |
-
-```python
-from atomadic import Atomadic, mind_lab
-ato = Atomadic(api_key='ato_...')
-mind_lab.omega_brainstorm(ato, topic=..., host=..., contributors=...)
-```
-
-See per-tool docstrings for full arg schemas: `help(mind_lab.omega_brainstorm)`
 
 ## Two-gate dispatch
 

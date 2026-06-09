@@ -42,6 +42,24 @@ def assess_import_direction_pure(client, source_text, tier, **kwargs):
     args.update(kwargs)
     return client.call('assess_import_direction_pure', args)
 
+def orchestrate_s2s_temporal(client, intent, target_source=None, dry_run=None, **kwargs):
+    """[Fuse product Â· entitlement: fuse] Spaghetti-to-shippable: turn a single repo + an intent into a gated, shippable product package. Public profile is BOUNDED â€” single-repo harvest, tier-5-max emission, redaction (enforce_public_s2s_constraints). Dry-run by default.
+
+    Args:
+        intent (string, required): What to build from the source
+        target_source (string, optional): Path/ref to the single source repo to transform
+        dry_run (boolean, optional): Plan only (default true)
+
+    Example:
+        from atomadic import Atomadic, fuse
+        ato = Atomadic(api_key='ato_...')
+        result = fuse.orchestrate_s2s_temporal(ato, intent=...)
+    """
+    args = {'intent': intent, 'target_source': target_source, 'dry_run': dry_run}
+    args = {k: v for k, v in args.items() if v is not None}
+    args.update(kwargs)
+    return client.call('orchestrate_s2s_temporal', args)
+
 def scan_code_stubs_pure(client, source_text, **kwargs):
     """[Fuse product Â· entitlement: fuse] Stub-hunter: scan provided source for stub/scaffold/placeholder patterns (NotImplementedError, TODO/FIXME, ellipsis/pass-only bodies, empty-shell returns). Returns REAL or STUB + findings.
 
