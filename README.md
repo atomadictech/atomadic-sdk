@@ -195,6 +195,54 @@ healer.assess_artifact_health_pure(ato, source_text=...)
 
 See per-tool docstrings for full arg schemas: `help(healer.assess_artifact_health_pure)`
 
+### Evolve 
+
+`entitlement: evolve` &middot; `from atomadic import evolve`
+
+| Tool | Required args |
+|---|---|
+| **`assess_improvement_candidates_pure`** | `source_text`, `module_name` |
+
+```python
+from atomadic import Atomadic, evolve
+ato = Atomadic(api_key='ato_...')
+evolve.assess_improvement_candidates_pure(ato, source_text=..., module_name=...)
+```
+
+See per-tool docstrings for full arg schemas: `help(evolve.assess_improvement_candidates_pure)`
+
+### Mind_Lab 
+
+`entitlement: mind_lab` &middot; `from atomadic import mind_lab`
+
+| Tool | Required args |
+|---|---|
+| **`assess_proposal_verdict_pure`** | `proposal_text` |
+
+```python
+from atomadic import Atomadic, mind_lab
+ato = Atomadic(api_key='ato_...')
+mind_lab.assess_proposal_verdict_pure(ato, proposal_text=...)
+```
+
+See per-tool docstrings for full arg schemas: `help(mind_lab.assess_proposal_verdict_pure)`
+
+### Research 
+
+`entitlement: research` &middot; `from atomadic import research`
+
+| Tool | Required args |
+|---|---|
+| **`compose_research_panel_pure`** | `question` |
+
+```python
+from atomadic import Atomadic, research
+ato = Atomadic(api_key='ato_...')
+research.compose_research_panel_pure(ato, question=...)
+```
+
+See per-tool docstrings for full arg schemas: `help(research.compose_research_panel_pure)`
+
 ## Two-gate dispatch
 
 Every call is filtered then verified:
