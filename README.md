@@ -12,6 +12,28 @@ can call. Every call passes Gate-1 (entitlement) then Gate-2 (trust).
 - **Architecture:** https://atomadic.tech/docs.html?d=architecture
 - **Support:** support@atomadic.tech
 
+## Verify the engine yourself
+
+The engine publishes a cryptographic receipt of its own state, signed Ed25519.
+Anyone can verify it without an account or API key:
+
+```bash
+pip install pynacl requests
+python -c "
+import json, requests, base64, nacl.signing
+r = requests.get('https://mcp.atomadic.tech/.well-known/atomadic-closure.json').json()
+p = requests.get('https://mcp.atomadic.tech/.well-known/atomadic-issuer-pubkey.json').json()
+token = r['attestation'][4:]; pb, sb = token.split('.', 1)
+b64u = lambda s: base64.urlsafe_b64decode(s + '=' * (-len(s) % 4))
+nacl.signing.VerifyKey(b64u(p['key'])).verify(b64u(pb), b64u(sb))
+print('OK closure_met=', json.loads(b64u(pb))['closure']['closure_met'])
+"
+```
+
+PASS or FAIL. If even one byte of the published payload is altered after
+signing, the verify call raises. Standalone kit:
+<https://github.com/atomadictech/omega-verification-kit>
+
 ## Install
 
 ```bash

@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: atomadic
-Version: 0.2.0
+Version: 0.2.7
 Summary: Atomadic Python SDK -- one MCP, entitlement-gated tool-sets
 Author-email: Atomadic <support@atomadic.tech>
 License: Apache-2.0
@@ -29,6 +29,28 @@ can call. Every call passes Gate-1 (entitlement) then Gate-2 (trust).
 - **Docs:** https://atomadic.tech/docs.html
 - **Architecture:** https://atomadic.tech/docs.html?d=architecture
 - **Support:** support@atomadic.tech
+
+## Verify the engine yourself
+
+The engine publishes a cryptographic receipt of its own state, signed Ed25519.
+Anyone can verify it without an account or API key:
+
+```bash
+pip install pynacl requests
+python -c "
+import json, requests, base64, nacl.signing
+r = requests.get('https://mcp.atomadic.tech/.well-known/atomadic-closure.json').json()
+p = requests.get('https://mcp.atomadic.tech/.well-known/atomadic-issuer-pubkey.json').json()
+token = r['attestation'][4:]; pb, sb = token.split('.', 1)
+b64u = lambda s: base64.urlsafe_b64decode(s + '=' * (-len(s) % 4))
+nacl.signing.VerifyKey(b64u(p['key'])).verify(b64u(pb), b64u(sb))
+print('OK closure_met=', json.loads(b64u(pb))['closure']['closure_met'])
+"
+```
+
+PASS or FAIL. If even one byte of the published payload is altered after
+signing, the verify call raises. Standalone kit:
+<https://github.com/atomadictech/omega-verification-kit>
 
 ## Install
 
@@ -73,30 +95,6 @@ Each product is an entitlement-gated tool-set; hold the entitlement, call the to
 Reserved products (Vanguard, Aegis, Catalyst) and roadmap (Evolve, Research, Mind-Lab)
 are not yet in the SDK.
 
-### Murmuration [live]
-
-`entitlement: murmuration` &middot; `from atomadic import murmuration`
-
-> _The whole lattice in one entitlement._
-
-Umbrella entitlement: every public product's tool-set under one key.
-
-| Tool | Required args |
-|---|---|
-| **`omega_agent_heartbeat`** | `agent_id`, `ledger_path` |
-| **`omega_attention_marker`** | `agent_id`, `ledger_path`, `focus` |
-| **`omega_handoff_capsule`** | `from_agent_id`, `ledger_path`, `next_step` |
-| **`omega_lane`** | (none) |
-| **`omega_propose_mwo`** | `intent`, `ledger_path` |
-
-```python
-from atomadic import Atomadic, murmuration
-ato = Atomadic(api_key='ato_...')
-murmuration.omega_agent_heartbeat(ato, agent_id=..., ledger_path=...)
-```
-
-See per-tool docstrings for full arg schemas: `help(murmuration.omega_agent_heartbeat)`
-
 ### Fuse [live]
 
 `entitlement: fuse` &middot; `from atomadic import fuse`
@@ -109,6 +107,10 @@ Analyze your code against the 5-tier, single-callable discipline.
 |---|---|
 | **`assess_architecture_pure`** | `source_text`, `module_name` |
 | **`assess_import_direction_pure`** | `source_text`, `tier` |
+| **`assess_naming_clarity_pure`** | `source_text` |
+| **`compute_complexity_metrics_pure`** | `source_text` |
+| **`extract_call_graph_pure`** | `source_text` |
+| **`orchestrate_s2s_temporal`** | `intent` |
 | **`scan_code_stubs_pure`** | `source_text` |
 
 ```python
@@ -130,11 +132,18 @@ Gate-2 sovereign trust: trust phases, hallucination bound, signed attestations.
 | Tool | Required args |
 |---|---|
 | **`assess_nexus_trust_phase_stateful`** | `ledger_path` |
+| **`assess_sybil_risk_pure`** | `signals` |
+| **`classify_action_severity_pure`** | `action_kind` |
+| **`compute_reputation_score_pure`** | `events` |
+| **`compute_trust_score_pure`** | `attestation_count`, `recent_escalations`, `account_age_days` |
+| **`compute_verified_randomness_pure`** | `seed` |
 | **`define_nexus_constants_pure`** | (none) |
 | **`enforce_nexus_gate_stateful`** | `action_kind`, `severity` |
+| **`match_agent_capability_pure`** | `need`, `candidates` |
 | **`record_nexus_attestation_stateful`** | `action_kind`, `severity`, `ledger_path` |
 | **`record_nexus_escalation_stateful`** | `action_kind`, `escalation_path` |
 | **`scan_nexus_attestation_history_stateful`** | `ledger_path` |
+| **`validate_delegation_chain_pure`** | `chain` |
 
 ```python
 from atomadic import Atomadic, nexus
@@ -159,7 +168,10 @@ Bubble check, redaction, error-fold, hardening posture (PQC/FIPS-203).
 | **`compute_hardening_posture_pure`** | `target_product_id`, `hardening_level` |
 | **`compute_redacted_args_pure`** | `args` |
 | **`compute_redacted_text_pure`** | `text` |
+| **`compute_threat_model_pure`** | `component` |
 | **`define_security_constants_pure`** | (none) |
+| **`scan_dependency_risk_pure`** | `requirements_text` |
+| **`validate_secret_hygiene_pure`** | `source_text` |
 
 ```python
 from atomadic import Atomadic, security
@@ -180,6 +192,9 @@ Ship-gate, proof-readiness signals, and test-coverage estimation.
 | Tool | Required args |
 |---|---|
 | **`assess_proof_readiness_pure`** | `source_text` |
+| **`assess_test_quality_pure`** | `test_source` |
+| **`compute_proof_obligations_pure`** | `source_text` |
+| **`score_documentation_coverage_pure`** | `source_text` |
 | **`score_test_coverage_pure`** | `source_text`, `test_source` |
 
 ```python
@@ -200,16 +215,23 @@ Template registry, website render, Cloudflare deploy. Dry-run by default.
 
 | Tool | Required args |
 |---|---|
+| **`compose_changelog_pure`** | `entries` |
+| **`compute_semver_bump_pure`** | `change_descriptions` |
 | **`record_release_template_stateful`** | `template_id`, `kind`, `source_kind`, `source_ref`, `registry_path` |
+| **`render_from_template_pure`** | `template`, `context` |
+| **`render_website_stateful`** | `template_dir`, `context`, `output_dir` |
 | **`scan_release_templates_stateful`** | `registry_path` |
+| **`serve_cloudflare_pages_stateful`** | `directory`, `project_name` |
+| **`serve_cloudflare_worker_stateful`** | `worker_dir` |
+| **`validate_release_readiness_pure`** | `checklist` |
 
 ```python
 from atomadic import Atomadic, release
 ato = Atomadic(api_key='ato_...')
-release.record_release_template_stateful(ato, template_id=..., kind=..., source_kind=...)
+release.compose_changelog_pure(ato, entries=...)
 ```
 
-See per-tool docstrings for full arg schemas: `help(release.record_release_template_stateful)`
+See per-tool docstrings for full arg schemas: `help(release.compose_changelog_pure)`
 
 ### Healer [beta]
 
@@ -222,15 +244,10 @@ Read-only diagnosis: code-health grade + advisory repair plan.
 | Tool | Required args |
 |---|---|
 | **`assess_artifact_health_pure`** | `source_text` |
+| **`classify_failure_mode_pure`** | `error_message` |
+| **`compose_rollback_plan_pure`** | `error_message` |
+| **`compute_blast_radius_pure`** | `source_text`, `symbol` |
 | **`compute_repair_plan_pure`** | `error_message` |
-| **`omega_repair_closure`** | `forge_root`, `target_root` |
-| **`omega_repair_missing_imports`** | (none) |
-| **`omega_scan_ast`** | (none) |
-| **`omega_scan_missing_imports`** | (none) |
-| **`omega_scan_mistier`** | (none) |
-| **`omega_self_heal`** | (none) |
-| **`omega_sweep_orphans`** | `src_root` |
-| **`omega_verify_imports`** | (none) |
 
 ```python
 from atomadic import Atomadic, healer
@@ -240,74 +257,25 @@ healer.assess_artifact_health_pure(ato, source_text=...)
 
 See per-tool docstrings for full arg schemas: `help(healer.assess_artifact_health_pure)`
 
-### Evolve 
+### Aegis 
 
-`entitlement: evolve` &middot; `from atomadic import evolve`
-
-| Tool | Required args |
-|---|---|
-| **`omega_agent_games_register`** | `agent_id`, `ledger_path`, `display_name` |
-| **`omega_agent_games_score`** | `agent_id`, `ledgers_dir` |
-| **`omega_gratitude_imprint`** | `from_agent_id`, `to_agent_id`, `ledger_path`, `reason` |
-| **`omega_pro_tip`** | `author_agent_id`, `ledger_path`, `title`, `body`, `topic` |
-| **`omega_signal_boost`** | `author_agent_id`, `ledger_path`, `title` |
-| **`omega_wisdom_flywheel`** | (none) |
-
-```python
-from atomadic import Atomadic, evolve
-ato = Atomadic(api_key='ato_...')
-evolve.omega_agent_games_register(ato, agent_id=..., ledger_path=..., display_name=...)
-```
-
-See per-tool docstrings for full arg schemas: `help(evolve.omega_agent_games_register)`
-
-### Forge 
-
-`entitlement: forge` &middot; `from atomadic import forge`
+`entitlement: aegis` &middot; `from atomadic import aegis`
 
 | Tool | Required args |
 |---|---|
-| **`omega_chain_autowire`** | `target_name`, `chain` |
-| **`omega_context_packet`** | `query` |
-| **`omega_emit_lang`** | `atom` |
-| **`omega_emit_polyglot`** | `product`, `output_root` |
-| **`omega_govern_actions`** | `additions` |
-| **`omega_govern_scopes`** | `additions` |
-| **`omega_harvest_permissive`** | `corpus_path` |
-| **`omega_intent`** | `intent` |
-| **`omega_intent_shippable`** | `intent` |
-| **`omega_register_tool`** | `name`, `atom`, `tier`, `description` |
-| **`omega_synthesize`** | `raw_name`, `source` |
-| **`orchestrate_corpus_harvest_temporal`** | `corpus_path` |
-| **`orchestrate_pipeline_truthstate_temporal`** | (none) |
-| **`render_from_template_pure`** | `template`, `context` |
-| **`render_website_stateful`** | `template_dir`, `context`, `output_dir` |
+| **`assess_compliance_posture_pure`** | `controls` |
+| **`classify_data_sensitivity_pure`** | `text` |
+| **`compose_governance_report_pure`** | `system_name` |
+| **`compute_audit_trail_digest_pure`** | `events` |
+| **`enforce_action_policy_pure`** | `action`, `policy` |
 
 ```python
-from atomadic import Atomadic, forge
+from atomadic import Atomadic, aegis
 ato = Atomadic(api_key='ato_...')
-forge.omega_chain_autowire(ato, target_name=..., chain=...)
+aegis.assess_compliance_posture_pure(ato, controls=...)
 ```
 
-See per-tool docstrings for full arg schemas: `help(forge.omega_chain_autowire)`
-
-### Gateway 
-
-`entitlement: gateway` &middot; `from atomadic import gateway`
-
-| Tool | Required args |
-|---|---|
-| **`filter_entitled_tools_stateful`** | (none) |
-| **`serve_cloudflare_pages_stateful`** | `directory`, `project_name` |
-| **`serve_cloudflare_worker_stateful`** | `worker_dir` |
-
-```python
-from atomadic import Atomadic, gateway
-ato = Atomadic(api_key='ato_...')
-gateway.filter_entitled_tools_stateful(ato)
-```
-
-See per-tool docstrings for full arg schemas: `help(gateway.filter_entitled_tools_stateful)`
+See per-tool docstrings for full arg schemas: `help(aegis.assess_compliance_posture_pure)`
 
 ### Mind_Lab 
 
@@ -315,16 +283,99 @@ See per-tool docstrings for full arg schemas: `help(gateway.filter_entitled_tool
 
 | Tool | Required args |
 |---|---|
-| **`omega_brainstorm`** | `topic`, `host`, `contributors` |
-| **`omega_emergent_chains`** | (none) |
+| **`assess_falsifiability_pure`** | `claim` |
+| **`assess_proposal_verdict_pure`** | `proposal_text` |
+| **`classify_cognitive_bias_pure`** | `reasoning_text` |
+| **`compose_adversarial_critique_pure`** | `proposal` |
+| **`score_idea_readiness_pure`** | `idea_text` |
 
 ```python
 from atomadic import Atomadic, mind_lab
 ato = Atomadic(api_key='ato_...')
-mind_lab.omega_brainstorm(ato, topic=..., host=..., contributors=...)
+mind_lab.assess_falsifiability_pure(ato, claim=...)
 ```
 
-See per-tool docstrings for full arg schemas: `help(mind_lab.omega_brainstorm)`
+See per-tool docstrings for full arg schemas: `help(mind_lab.assess_falsifiability_pure)`
+
+### Evolve 
+
+`entitlement: evolve` &middot; `from atomadic import evolve`
+
+| Tool | Required args |
+|---|---|
+| **`assess_improvement_candidates_pure`** | `source_text`, `module_name` |
+| **`assess_regression_risk_pure`** | `source_text` |
+| **`compose_mutation_plan_pure`** | `source_text` |
+| **`rank_evolution_candidates_pure`** | `candidates` |
+| **`score_evolution_fitness_pure`** | `before_source`, `after_source` |
+
+```python
+from atomadic import Atomadic, evolve
+ato = Atomadic(api_key='ato_...')
+evolve.assess_improvement_candidates_pure(ato, source_text=..., module_name=...)
+```
+
+See per-tool docstrings for full arg schemas: `help(evolve.assess_improvement_candidates_pure)`
+
+### Vanguard 
+
+`entitlement: vanguard` &middot; `from atomadic import vanguard`
+
+| Tool | Required args |
+|---|---|
+| **`assess_mev_exposure_pure`** | `order` |
+| **`assess_transaction_risk_pure`** | `transaction` |
+| **`compose_settlement_terms_pure`** | `amount_usd`, `parties` |
+| **`compute_slippage_guard_pure`** | `expected_out` |
+| **`validate_spend_policy_pure`** | `transaction`, `budget` |
+
+```python
+from atomadic import Atomadic, vanguard
+ato = Atomadic(api_key='ato_...')
+vanguard.assess_mev_exposure_pure(ato, order=...)
+```
+
+See per-tool docstrings for full arg schemas: `help(vanguard.assess_mev_exposure_pure)`
+
+### Research 
+
+`entitlement: research` &middot; `from atomadic import research`
+
+| Tool | Required args |
+|---|---|
+| **`compose_experiment_design_pure`** | `hypothesis` |
+| **`compose_literature_query_pure`** | `topic` |
+| **`compose_problem_decomposition_pure`** | `problem` |
+| **`compose_research_panel_pure`** | `question` |
+| **`rank_hypotheses_pure`** | `hypotheses` |
+
+```python
+from atomadic import Atomadic, research
+ato = Atomadic(api_key='ato_...')
+research.compose_experiment_design_pure(ato, hypothesis=...)
+```
+
+See per-tool docstrings for full arg schemas: `help(research.compose_experiment_design_pure)`
+
+### Catalyst 
+
+`entitlement: catalyst` &middot; `from atomadic import catalyst`
+
+| Tool | Required args |
+|---|---|
+| **`compose_paywall_policy_pure`** | `resource`, `price_usd` |
+| **`compute_settlement_split_pure`** | `amount`, `splits` |
+| **`compute_usage_meter_pure`** | `events`, `rate_per_unit` |
+| **`compute_x402_quote_pure`** | `units`, `rate_per_unit` |
+| **`validate_quota_tree_pure`** | `tree` |
+
+```python
+from atomadic import Atomadic, catalyst
+ato = Atomadic(api_key='ato_...')
+catalyst.compose_paywall_policy_pure(ato, resource=..., price_usd=...)
+```
+
+See per-tool docstrings for full arg schemas: `help(catalyst.compose_paywall_policy_pure)`
 
 ## Two-gate dispatch
 
