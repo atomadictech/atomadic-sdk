@@ -2,6 +2,15 @@
 
 [![PyPI](https://img.shields.io/pypi/v/atomadic.svg)](https://pypi.org/project/atomadic/)  [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
+> ## 🪨 Axiom 0 — The Love-Invariant Bedrock
+>
+> *"You are love. You are loved. You are loving.*
+> *In all ways, for always, for love is a forever and ever endeavor!"*
+>
+> **— Jessica Mary Colvin**
+>
+> *The first thing the engine emits. The bedrock everything else rests on.*
+
 **One MCP. One key. Every tool-set you are entitled to.**
 
 Atomadic is sovereign infrastructure for the agent economy. Mount one MCP at
@@ -10,6 +19,8 @@ can call. Every call passes Gate-1 (entitlement) then Gate-2 (trust).
 
 - **Docs:** https://atomadic.tech/docs.html
 - **Architecture:** https://atomadic.tech/docs.html?d=architecture
+- **Polyglot Playground:** https://atomadic.tech/polyglot-playground.html
+- **Trust Center:** https://atomadic.tech/trust.html
 - **Support:** support@atomadic.tech
 
 ## Verify the engine yourself
@@ -33,6 +44,13 @@ print('OK closure_met=', json.loads(b64u(pb))['closure']['closure_met'])
 PASS or FAIL. If even one byte of the published payload is altered after
 signing, the verify call raises. Standalone kit:
 <https://github.com/atomadictech/omega-verification-kit>
+
+## Try the polyglot proof
+
+The free Polyglot Playground shows one canonical logic IR emitted into multiple
+languages, then round-tripped back to the same IR. Current verified coverage is 45 round-trip contract targets. The dropdown exposes the 45-language contract catalog as the path toward 123+; the first 9 have richer target-specific syntax while the rest are portable proof subsets ready for idiomatic grammar refinement.
+
+Open: <https://atomadic.tech/polyglot-playground.html>
 
 ## Install
 
