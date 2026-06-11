@@ -20,8 +20,20 @@ can call. Every call passes Gate-1 (entitlement) then Gate-2 (trust).
 - **Docs:** https://atomadic.tech/docs.html
 - **Architecture:** https://atomadic.tech/docs.html?d=architecture
 - **Polyglot Playground:** https://atomadic.tech/polyglot-playground.html
+- **Polyglot Docs:** https://atomadic.tech/docs.html?d=product-polyglot
 - **Trust Center:** https://atomadic.tech/trust.html
 - **Support:** support@atomadic.tech
+
+## What's new
+
+- **Syntax-as-Data polyglot emit:** one generic emitter,
+  `emit_polyglot_generic_composite`, emits from grammar and semantic-map data
+  contracts instead of language-specific compiler heads.
+- **45 verified round-trip contract targets:** Python, TypeScript, Rust, COBOL,
+  Java, C++, PL/I, RPG, and 37 more contract targets are visible in the public
+  playground.
+- **Public proof surface:** try one logic IR, emit it into multiple languages,
+  then round-trip it back to the same IR in the browser.
 
 ## Verify the engine yourself
 
@@ -48,7 +60,11 @@ signing, the verify call raises. Standalone kit:
 ## Try the polyglot proof
 
 The free Polyglot Playground shows one canonical logic IR emitted into multiple
-languages, then round-tripped back to the same IR. Current verified coverage is 45 round-trip contract targets. The dropdown exposes the 45-language contract catalog as the path toward 123+; the first 9 have richer target-specific syntax while the rest are portable proof subsets ready for idiomatic grammar refinement.
+languages, then round-tripped back to the same IR. Current verified coverage is
+45 round-trip contract targets. Adding a language is a data-contract job:
+`grammar_<lang>.json`, `semantic_map_<lang>.json`, reverse-map data, and
+formatter rules. The first 9 targets have richer target-specific syntax while
+the rest are portable proof subsets ready for idiomatic grammar refinement.
 
 Open: <https://atomadic.tech/polyglot-playground.html>
 
